@@ -1,103 +1,123 @@
-import Image from "next/image";
+'use client'
+
+import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import confetti from 'canvas-confetti'
+
+const messages = [
+  "I LOVE YOU SATTULTEEEE 💖",
+  "You’re the sunshine in my every day 🌞",
+  "I’d choose you, in every lifetime 💫",
+  "Your smile is my favorite melody 🎶",
+  "With you, every day is a celebration 🎉",
+  "You light up my world like nobody else ✨",
+  "You’re my greatest adventure 🌍",
+  "Falling for you more and more every day 💖",
+  "To the most beautiful soul — Happy Birthday, love 💐",
+]
+const generatePetals = (count: number) => {
+  return Array.from({ length: count }, (_, i) => (
+    <motion.div
+      key={i}
+      className="absolute top-0 left-0 w-6 h-6 text-pink-400 text-2xl select-none pointer-events-none"
+      initial={{ x: Math.random() * window.innerWidth, y: -50, opacity: 0 }}
+      animate={{
+        y: window.innerHeight + 50,
+        opacity: [0, 1, 0.8, 0],
+        rotate: 360,
+      }}
+      transition={{
+        duration: 10 + Math.random() * 10,
+        ease: 'easeInOut',
+        repeat: Infinity,
+        delay: Math.random() * 5,
+      }}
+      style={{ left: `${Math.random() * 100}%` }}
+    >
+      🌸
+    </motion.div>
+  ))
+}
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [index, setIndex] = useState(0)
+  const [showPopup, setShowPopup] = useState(false)
+  const [bgm, setBgm] = useState<HTMLAudioElement | null>(null)
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  const handleClick = () => {
+    setIndex((prev) => (prev + 1) % messages.length)
+    setShowPopup(true)
+
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
+    })
+  }
+
+  useEffect(() => {
+    const audio = new Audio('/audio/happy.mp3')
+    audio.loop = true
+    audio.volume = 0.5
+    setBgm(audio)
+  }, [])
+
+  const startMusic = () => {
+    if (bgm) bgm.play()
+    handleClick()
+  }
+
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-pink-100 to-pink-200 text-center px-4 relative overflow-hidden">
+      {generatePetals(20)}
+
+      <h1 className="text-4xl md:text-6xl font-bold text-pink-700 mb-6">
+        🎂 Happy Birthday, My Love!
+      </h1>
+
+      <motion.button
+        onClick={startMusic}
+        whileHover={{ scale: 1.1 }}
+        animate={{
+          scale: [1, 1.05, 1],
+          boxShadow: [
+            "0 0 0px #ec4899",
+            "0 0 15px #ec4899",
+            "0 0 0px #ec4899"
+          ],
+        }}
+        transition={{
+          repeat: Infinity,
+          duration: 2,
+        }}
+        className="bg-pink-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-pink-700 transition"
+      >
+        Press Me 💌
+      </motion.button>
+
+      <AnimatePresence>
+        {showPopup && (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.6 }}
+            className="fixed top-20 bg-white text-pink-600 border border-pink-300 rounded-xl shadow-lg p-6 max-w-sm mx-auto mt-6 z-50"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+            <p className="text-lg font-medium">{messages[index]}</p>
+            <div className="text-3xl mt-2 animate-pulse">🌸</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <motion.img
+        src="/images/flowers.svg"
+        alt="Flowers"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 1 }}
+        className="absolute bottom-0 w-full max-h-60 object-contain"
+      />
     </div>
-  );
+  )
 }
