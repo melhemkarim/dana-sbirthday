@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, ReactElement } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import confetti from 'canvas-confetti'
 
@@ -12,6 +12,7 @@ const messages = [
   "You light up my world like nobody else ✨",
   "You’re my greatest adventure 🌍",
   "Falling for you more and more every day 💜",
+  "I LOVE YOU SATTULTE💜 ",
   "To the most beautiful soul — Happy Birthday, love 💐",
 ]
 
@@ -19,7 +20,7 @@ export default function Home() {
   const [index, setIndex] = useState(0)
   const [showPopup, setShowPopup] = useState(false)
   const [bgm, setBgm] = useState<HTMLAudioElement | null>(null)
-  const [petals, setPetals] = useState<ReactElement[]>([])
+  const [petals, setPetals] = useState<React.JSX.Element[]>([])
   const [secretShown, setSecretShown] = useState(false)
   const [secretClicks, setSecretClicks] = useState(0)
   const [pressCount, setPressCount] = useState(0)
@@ -225,14 +226,7 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      <motion.img
-        src="/images/flowers.svg"
-        alt="Flowers"
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, duration: 1 }}
-        className="absolute bottom-0 w-full max-h-60 object-contain"
-      />
+      
     </div>
   )
 }
